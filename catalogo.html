@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compra</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1 {
+            text-align: left;
+            margin: 20px 0;
+            font-size: 2.5em;
+            color: black;
+        }
+        .search-bar {
+            margin: 20px 0;
+        }
+        .search-bar input {
+            width: 100%;
+            max-width: 400px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-gap: 10px;
+            padding: 20px;
+        }
+        .grid-item {
+            text-align: center;
+        }
+        .grid-item img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+        }
+        .btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            margin-top: 10px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .cart-container {
+            width: 100%;
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #ddd;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        }
+        .cart-container h2 {
+            margin-top: 0;
+            font-size: 1.5em;
+            text-align: center;
+        }
+        .cart-container .product {
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+            text-align: left;
+        }
+        .cart-container .btn-buy {
+            background-color: #008CBA;
+            width: 100%;
+            padding: 10px;
+            font-size: 1em;
+            margin-top: 10px;
+            display: block;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>COMPRA</h1>
+    <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="Buscar...">
+    </div>
+    <div class="grid" id="imageGrid">
+        <!-- Imágenes enumeradas del 1 al 9 -->
+        <div class="grid-item" data-title="Producto 1" data-price="10">
+            <img src="huevo.jpg" alt="Producto 1">
+            <div class="price">$10</div>
+            <button class="btn" onclick="agregarAlCarrito('Producto 1', 10)">Agregar al Carrito</button>
+        </div>
+        <div class="grid-item" data-title="Producto 2" data-price="20">
+            <img src="ruta/de/tu/imagen2.jpg" alt="Producto 2">
+            <div class="price">$20</div>
+            <button class="btn" onclick="agregarAlCarrito('Producto 2', 20)">Agregar al Carrito</button>
+        </div>
+        <div class="grid-item" data-title="Producto 3" data-price="30">
+            <img src="ruta/de/tu/imagen3.jpg" alt="Producto 3">
+            <div class="price">$30</div>
+            <button class="btn" onclick="agregarAlCarrito('Producto 3', 30)">Agregar al Carrito</button>
+        </div>
+        <div class="grid-item" data-title="Producto 4" data-price="40">
+            <img src="ruta/de/tu/imagen4.jpg" alt="Producto 4">
+            <div class="price">$40</div>
+            <button class="btn" onclick="agregarAlCarrito('Producto 4', 40)">Agregar al Carrito</button>
+        </div>
+        <div class="grid-item" data-title="Producto 5" data-price="50">
+            <img src="ruta/de/tu/imagen5.jpg" alt="Producto 5">
+            <div class="price">$50</div>
+            <button class="btn" onclick="agregarAlCarrito('Producto 5', 50)">Agregar al Carrito</button>
+        </div>
+        <div class="grid-item" data-title="Producto 6" data-price="60">
+            <img src="ruta/de/tu/imagen6.jpg" alt="Producto 6">
+            <div class="price">$60</div>
+            <button class="btn" onclick="agregarAlCarrito('Producto 6', 60)">Agregar al Carrito</button>
+        </div>
+        <div class="grid-item" data-title="Producto 7" data-price="70">
+            <img src="ruta/de/tu/imagen7.jpg" alt="Producto 7">
+            <div class="price">$70</div>
+            <button class="btn" onclick="agregarAlCarrito('Producto 7', 70)">Agregar al Carrito</button>
+        </div>
+        <div class="grid-item" data-title="Producto 8" data-price="80">
+            <img src="ruta/de/tu/imagen8.jpg" alt="Producto 8">
+            <div class="price">$80</div>
+            <button class="btn" onclick="agregarAlCarrito('Producto 8', 80)">Agregar al Carrito</button>
+        </div>
+        <div class="grid-item" data-title="Producto 9" data-price="90">
+            <img src="ruta/de/tu/imagen9.jpg" alt="Producto 9">
+            <div class="price">$90</div>
+            <button class="btn" onclick="agregarAlCarrito('Producto 9', 90)">Agregar al Carrito</button>
+        </div>
+    </div>
+    <div class="cart-container" id="carrito">
+        <h2>Carrito de Compras</h2>
+        <div id="carritoItems">
+            <p>Tu carrito está vacío.</p>
+        </div>
+        <h3 id="total">Total: $0</h3>
+        <button class="btn-buy" onclick="generarPlanilla()">Generar Planilla</button>
+    </div>
+
+    <script>
+        let carrito = [];
+
+        document.getElementById('searchInput').addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const items = document.querySelectorAll('.grid-item');
+            items.forEach(item => {
+                const title = item.getAttribute('data-title').toLowerCase();
+                if (title.includes(searchTerm)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+
+        function agregarAlCarrito(producto, precio) {
+            if (typeof producto !== 'undefined' && typeof precio !== 'undefined') {
+                carrito.push({ producto, precio });
+                mostrarCarrito();
+            } else {
+                console.error('Producto o precio no definido');
+            }
+        }
+
+        function mostrarCarrito() {
+            const carritoItems = document.getElementById('carritoItems');
+            carritoItems.innerHTML = '';
+
+            if (carrito.length === 0) {
+                carritoItems.innerHTML = '<p>Tu carrito está vacío.</p>';
+                return;
+            }
+
+            carrito.forEach(item => {
+                const productDiv = document.createElement('div');
+                productDiv.classList.add('product');
+                productDiv.innerHTML = `<p>${item.producto} - $${item.precio}</p>`;
+                carritoItems.appendChild(productDiv);
+            });
+
+            const total = carrito.reduce((sum, item) => sum + item.precio, 0);
+            document.getElementById('total').innerText = `Total: $${total}`;
+        }
+
+        function generarPlanilla() {
+            const nombre = prompt('Ingrese su nombre:');
+            const direccion = prompt('Ingrese su dirección:');
+
+            if (!nombre || !direccion) {
+                alert('Debe ingresar su nombre y dirección.');
+                return;
+            }
+
+            let planilla = `Pedido de ${nombre}\nDirección: ${direccion}\n\nProductos:\n`;
+            carrito.forEach(item => {
+                planilla += `${item.producto} - $${item.precio}\n`;
+            });
+
+            const total = carrito.reduce((sum, item) => sum + item.precio, 0);
+            planilla += `\nTotal: $${total}`;
+
+            // Generar link de WhatsApp
+            const encodedPlanilla = encodeURIComponent(planilla);
+            const whatsappUrl = `https://wa.me/?text=${encodedPlanilla}`;
+
+            // Crear enlace de WhatsApp
+            window.open(whatsappUrl, '_blank');
+        }
+    </script>
+</body>
+</html>
